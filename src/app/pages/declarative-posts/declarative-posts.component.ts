@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BehaviorSubject, Subject, combineLatest, map } from 'rxjs';
 import { DeclarativeCategoryService } from 'src/app/services/declarativecategory.service';
-import { DeclarativePostService } from 'src/app/services/declarativepostservice';
+import { DeclarativePostService } from 'src/app/services/declarativepost.service';
 
 @Component({
   selector: 'app-declarative-posts',
