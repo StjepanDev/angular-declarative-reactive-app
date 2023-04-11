@@ -13,6 +13,7 @@ export class AlternativePostsComponent {
   // .subscribe((res) =>
   //   console.log(res)
   // );
+  selectedPost$ = this.postService.post$;
 
   onSelectPost(post: IPost, event: Event) {
     event.preventDefault();

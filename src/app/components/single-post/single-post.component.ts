@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { BehaviorSubject, catchError, EMPTY } from 'rxjs';
 import { DeclarativePostService } from 'src/app/services/declarativepost.service';
 
 @Component({
@@ -9,5 +10,14 @@ import { DeclarativePostService } from 'src/app/services/declarativepost.service
 })
 export class SinglePostComponent {
   constructor(private postService: DeclarativePostService) {}
-  post$ = this.postService.post$;
+  //radi templejta radimo novi stream error,ne moze onPush raditi
+  errorMessageSubject = new BehaviorSubject<string>('');
+  errorMessageAction$ = this.errorMessageSubject.asObservable();
+  errorMessage = '';
+  post$ = this.postService.post$.pipe(
+    catchError((error: string) => {
+      this.errorMessageSubject.next(error);
+      return EMPTY;
+    })
+  );
 }

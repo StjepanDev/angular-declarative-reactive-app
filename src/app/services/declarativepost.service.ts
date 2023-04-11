@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { combineLatest, Subject } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { combineLatest, Subject, throwError, catchError } from 'rxjs';
 import { IPost } from '../models/IPost';
 import { DeclarativeCategoryService } from './declarativecategory.service';
 
@@ -26,7 +26,9 @@ export class DeclarativePostService {
           postsData.push({ ...posts[id], id });
         }
         return postsData;
-      })
+      }),
+      catchError(this.handleError),
+      shareReplay(1)
     );
 
   postsWithCategory$ = combineLatest([
@@ -42,7 +44,9 @@ export class DeclarativePostService {
             ?.title,
         } as IPost;
       });
-    })
+    }),
+    catchError(this.handleError),
+    shareReplay(1)
   );
 
   private selectedpostSubject = new Subject<string>();
@@ -54,10 +58,18 @@ export class DeclarativePostService {
   ]).pipe(
     map(([posts, selectedPostId]) => {
       return posts.find((post) => post.id === selectedPostId);
-    })
+    }),
+    catchError(this.handleError),
+    shareReplay(1)
   );
 
   selectPost(postId: string) {
     this.selectedpostSubject.next(postId);
+  }
+
+  handleError(error: Error) {
+    return throwError(() => {
+      return 'Unknown error accured, please try again!';
+    });
   }
 }
